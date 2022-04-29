@@ -24,9 +24,11 @@
          this.hash = hash; //**이것만 직접 계산해줘야함
          this.previousHash = previousHash; //이전블럭정보
      }
- 
- 
  }
+
+ // 0 하나로 시작하는 hash 값을 만드는 매개변수(nonce)를 찾는다.
+ // 채굴참여자가 많아지면 난이도가 올라간다 ex) 0 2개로 시작하는 함수
+ // 난이도는 어디까지 올라갈 수 있는가? 16진수 64자리 (16진수 1자리는 2잔수 4자리 => 총 256개의 0과 1로 표현)
 
     
 //해시생성 함수
@@ -63,7 +65,7 @@ const blocks = [createGenesisBlock()];
      // 거래 또는 계약 등 발생한 정보
      
      //기존블럭
-     const previousBlock = blocks[blocks.length - 1];
+    const previousBlock = blocks[blocks.length - 1];
      //블럭 최신 index넘버 생성
     const nextIndex = previousBlock.index + 1;
     //블럭생성에 사용될 실시간 unixtime
@@ -74,11 +76,59 @@ const blocks = [createGenesisBlock()];
     //신규블럭 생성
     const newBlock = new Block(nextIndex, blockData, nextTimestamp, nextHash, previousBlock.hash);
     
-    blocks.push(newBlock);
-    return newBlock;
+    if (isValidNewBlock(newBlock, previousBlock)) {
+        blocks.push(newBlock);
+        return newBlock;
+    }
+    else {
+        console.log('fail to create newblock');
+        return null;
+    }
 }
 
 
+/**
+ * @param {newBlock, previousBlock}
+ * @returns boolean
+ * @brief 블럭의 무결성 검증
+ *  블럭의 인덱스가 이전 블럭인덱스보다 1크다.
+ *  블럭의 previousHash가 이전 블록의 hash이다.
+ *  블록의 구조가 일치해야 한다.
+ */
+ const isValidBlockStructure = (newBlock) => {
+    if (typeof newBlock.index === 'number'
+     && typeof newBlock.data === 'string'
+     && typeof newBlock.timestamp === 'number'
+     && typeof newBlock.hash === 'string'
+     && typeof newBlock.previousHash === 'string') return true;
+     else return false;
+}
+
+/**
+ * 
+ * @param {*} newBlock 
+ * @param {*} previousBlock 
+ * @returns boolean
+ */
+const isValidNewBlock = (newBlock, previousBlock) => {
+    if (newBlock.index !== previousBlock.index + 1) {
+        console.log('invalid index')
+        return false;
+    }
+    else if (newBlock.previousHash !== previousBlock.hash) {
+        console.log('invalid previous hash');
+        return false;
+    }
+    else if (isValidBlockStructure(newBlock) == false) {
+        console.log('invalid block structure');
+        return false;
+    }
+
+    return true;
+}
+
+
+if(isValidNewBlock){}
 
  
  //블럭들 정보 가져오기
@@ -88,4 +138,4 @@ const blocks = [createGenesisBlock()];
        
     return blocks;
 }
-export { getBlocks, calculateHash, createGenesisBlock, createBlock };
+export { getBlocks, calculateHash, createGenesisBlock, createBlock, isValidNewBlock };
