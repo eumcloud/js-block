@@ -73,7 +73,7 @@ const blocks = [createGenesisBlock()];
     //블럭생성에 사용될 실시간 unixtime
     const nextTimestamp = new Date().getTime() / 1000;
     /*0429*/
-	const nextDifficulty = 5;
+	const nextDifficulty = 2;
 	const nextNonce = findNonce(nextIndex, blockData, nextTimestamp, previousBlock.hash, nextDifficulty);
     /*0429*/
  
@@ -83,9 +83,8 @@ const blocks = [createGenesisBlock()];
 
     //신규블럭 생성
     const newBlock = new Block(nextIndex, blockData, nextTimestamp, nextHash, previousBlock.hash
-        /*0429*/,nextDifficulty, nextNonce/*0429*/);
-    
-
+        /*0429*/,nextDifficulty, nextNonce /*0429*/);
+        
     console.log(nextNonce);  
     if (isValidNewBlock(newBlock, previousBlock)) {
         blocks.push(newBlock);

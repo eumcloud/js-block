@@ -8,7 +8,7 @@ import bodyParser from "body-parser";
 import { getBlocks, createBlock } from './block.js';
 
 /** 0429 */
-import {connectionToPeer} from './p2pServer.js';
+import { connectionToPeer, getPeers, sendMessage } from './p2pServer.js';
 /**/
 
 //초기화 함수
@@ -32,6 +32,12 @@ const initHttpServer = (myHttpPort) => {
         res.send(getBlocks());
     })
 
+    
+    /*0429*/
+    app.post("/getPeers", (req, res) => {
+        res.send(getPeers());
+    })
+    
     /* 0429 */
     app.post("/addPeer", (req, res)=>{
         if (connectionToPeer(req.body.data)){
@@ -40,8 +46,11 @@ const initHttpServer = (myHttpPort) => {
             res.send("error connecting to peer");
         }
     })
-    /**/
 
+    /* 0429 */
+    app.post("/sendMessage", (req, res) => {
+        res.send(sendMessage(req.body.data));
+    })
 
 	app.listen(myHttpPort, ()=>{
 		console.log(`app is running Port : `, myHttpPort)
