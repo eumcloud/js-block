@@ -27,4 +27,18 @@ const initP2PServer = (p2pPort) =>{
 }
 
 
-export { initP2PServer };
+
+/* 다른 사람의 정보를 가지고 접속할 수 있는 기능 */
+/**
+ * 
+ * @param {*} newPeer 
+ */
+const connectionToPeer = (newPeer) => {
+    //웹소켓 생성
+    const ws = new WebSocket(newPeer);
+    ws.on('open', () => { initConnection(ws);    })
+    ws.on('error', () => { console.log('failed to connect peer : ', ws.remoteAddress ); return false })
+}
+
+
+export { initP2PServer, connectionToPeer };

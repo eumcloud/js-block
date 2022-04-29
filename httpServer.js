@@ -7,6 +7,10 @@ import express from "express";  //필요한 것만 불러와준다.
 import bodyParser from "body-parser";
 import { getBlocks, createBlock } from './block.js';
 
+/** 0429 */
+import {connectionToPeer} from './p2pServer.js';
+/**/
+
 //초기화 함수
 const initHttpServer = (myHttpPort) => {
 	const app = express();
@@ -27,6 +31,17 @@ const initHttpServer = (myHttpPort) => {
 
         res.send(getBlocks());
     })
+
+    /* 0429 */
+    app.post("/addPeer", (req, res)=>{
+        if (connectionToPeer(req.body.data)){
+            res.send('success connect to peer');
+        }else {
+            res.send("error connecting to peer");
+        }
+    })
+    /**/
+
 
 	app.listen(myHttpPort, ()=>{
 		console.log(`app is running Port : `, myHttpPort)
